@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h> 
+#include <LiquidCrystal.h> // lol
 
 int Contrast = 30; // Sets contrast, needs to be 30 or it will act a little odd
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // Assigns pins to LCD
@@ -12,14 +12,14 @@ void setup(){ // Single iteration setup code
   Serial.begin(9600); // This just needs to be here lol
   analogWrite(6, Contrast); // Sets LCD Contrast
   lcd.begin(16, 2); // Tells the program that the LCD is 16x2
-  pinMode(buttonPin, INPUT_PULLUP); // This needs to be here for button
+  pinMode(buttonPin1, INPUT_PULLUP); // This needs to be here for button
 } 
 
 void loop(){ // This code will always run in a loop, every millisecond
 // ADD USER INPUT FUNCTION HERE!!
 
-  int sensorValue = analogRead(A0); 
-  int val = (sensorValue / 43) + 1;
+  int sensorValue = analogRead(A5); 
+  int val = (sensorValue / 40) + 1;
 
   // This password check doesn't need to be here if we implement the user input program
   if (password.length() > 8){ // Password > 8 error handling
@@ -38,7 +38,7 @@ void loop(){ // This code will always run in a loop, every millisecond
     lcd.print("Shift = " + String(val)); //Prints the active shift change (have to convert int to str)
   }
 
-  if (digitalRead(buttonPin) == LOW && lock == 0){ // Checks if button is pressed
+  if (digitalRead(buttonPin1) == LOW && lock == 0){ // Checks if button is pressed
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(shiftString(password, val));
