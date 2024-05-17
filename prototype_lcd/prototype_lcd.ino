@@ -41,7 +41,9 @@ void loop(){ // This code will always run in a loop, every millisecond
   if (digitalRead(buttonPin1) == LOW && lock == 0){ // Checks if button is pressed
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(shiftString(password, val));
+    String shiftedPasswd = shiftString(password, val);
+    animateShiftedPasswd(shiftedPasswd);
+    delay(2000);
     lcd.setCursor(0, 1);
     expire(); // Custom animation function I wrote
   }
@@ -55,14 +57,21 @@ String shiftString(String str, int shift) { // need to test to see if it works
     char c = str.charAt(i);
     if (isAlpha(c)) {
       char base = isUpperCase(c) ? 'A' : 'a';
-      c = ((c - base + shift) % 26 + 26) % 26 + base;
+      c = ((c - base - shift) % 26 + 26) % 26 + base;
     }
     shifted += c;
   }
   return shifted;
 }
 
-// ADD ANIMATION FUNCTION FOR PRINTED DECRYPTION
+void animateShiftedPasswd(String shiftedPasswd)
+{
+  for (int i = 0; i < shiftedPasswd.length(); i++)
+  {
+    lcd.print(shiftedPasswd[i]);
+    delay(300);
+  }
+}
 
 void expire(){ // Custom animation function
     lcd.setCursor(0, 1);
