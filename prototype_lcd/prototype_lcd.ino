@@ -216,6 +216,7 @@ void atbashMode(){
     show("Ciphertext:", ciphertext);
 
     if (digitalRead(buttonPin2) == LOW) { // Apply decryption
+      lcd.clear();
       animateStr(atbashCipher(ciphertext), 0);
       expire();
     }
