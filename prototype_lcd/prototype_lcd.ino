@@ -7,8 +7,8 @@ const int buttonPin2 = 7; // right button
 // Main menu vars
 int arrVal = 0;
 bool menu = true; // Val for the while loop
-bool login = true;
-String menuItem[5] = {"Input Ciphertext", "Decrypt Caesar", "Decrypt Atbash", "???", "Logout"}; // Menu item array
+bool login = false;
+String menuItem[5] = {"Input Ciphertext", "Decrypt Atbash", "Decrypt Caesar", "???", "Logout"}; // Menu item array
 String ciphertext; // Global ciphertext var
 
 void setup() { // Single iteration setup code
@@ -39,7 +39,18 @@ void loop() { // This code will always run
       menu = true; // goes back to main menu
       break;
 
-    case 1: // Caesar Cipher 
+    case 1: // Atbash 
+      if (ciphertext != ""){
+         atbashMode();
+      }
+      else{
+        show("Please enter a", "cipher first");
+        delay(2900);
+      }
+      menu = true; // goes back to the main menu
+      break;
+
+    case 2: // Caesar Cipher
       if (ciphertext != ""){
       show("Use the dial to", "select the key");
       delay(2900);
@@ -50,17 +61,6 @@ void loop() { // This code will always run
         delay(2900);
       }
       menu = true; // goes back to main menu
-      break;
-
-    case 2: // Other
-      if (ciphertext != ""){
-         atbashMode();
-      }
-      else{
-        show("Please enter a", "cipher first");
-        delay(2900);
-      }
-      menu = true; // goes back to the main menu
       break;
 
     case 3:
@@ -86,21 +86,21 @@ void show(String firstRow, String secondRow){ //first is top row and second is b
   delay(100);
 }
 
+String atbashCipher(String input) {
+  String plaintext = ""; // Temporary string for the deciphered message
+  for (int i = 0; i < input.length(); i++) { // This goes through all letters of the ciphertext
+    char shiftedLetter = input[i]; // Stores the letter that is being shifted
+    plaintext += (char)('Z' - (shiftedLetter - 'A')); // Applies the letter swap and adds the letter to the plaintext
+  }
+  return plaintext; // Outputs the plaintext in its full form
+}
+
 String decryptCaesar(String str, int shift) { // Declares the function so it can be called from the main area
   String plaintext = ""; // Temporary string for the deciphered message
   for (int i = 0; i < str.length(); i++) { // This goes through all letters of the ciphertext
     char shiftedLetter = str.charAt(i); // Stores the letter that is being shifted
     shiftedLetter = ((shiftedLetter - 'A' - shift) % 26 + 26) % 26 + 'A';  // Shifts the letter
     plaintext += shiftedLetter; // Adds the shifted letter to plaintext
-  }
-  return plaintext; // Outputs the plaintext in its full form
-}
-
-String atbashCipher(String input) {
-  String plaintext = ""; // Temporary string for the deciphered message
-  for (int i = 0; i < input.length(); i++) { // This goes through all letters of the ciphertext
-    char shiftedLetter = input[i]; // Stores the letter that is being shifted
-    plaintext += (char)('Z' - (shiftedLetter - 'A')); // Applies the letter swap and adds the letter to the plaintext
   }
   return plaintext; // Outputs the plaintext in its full form
 }
@@ -240,7 +240,7 @@ void displayLogin(){
       passkeyStr += (String(i) + " ");
       delay(200);
       if(iterator == 2){
-        if(passkeyStr == "31 7 19 "){
+        if(passkeyStr == "6 23 12 "){
           show("Passkey Accepted", ":)");
           delay(2000);
           login = true;
