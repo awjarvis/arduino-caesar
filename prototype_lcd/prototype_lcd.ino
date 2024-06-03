@@ -7,8 +7,8 @@ const int buttonPin2 = 7; // right button
 // Main menu vars
 int arrVal = 0;
 bool menu = true; // Val for the while loop
-bool login = false;
-String menuItem[4] = {"Input Mode", "Caesar Cipher", "Atbash Cipher", "Logout"}; // Menu item array
+bool login = true;
+String menuItem[5] = {"Input Ciphertext", "Decrypt Caesar", "Decrypt Atbash", "???", "Logout"}; // Menu item array
 String ciphertext; // Global ciphertext var
 
 void setup() { // Single iteration setup code
@@ -63,7 +63,12 @@ void loop() { // This code will always run
       menu = true; // goes back to the main menu
       break;
 
-    case 3: // Logout
+    case 3:
+      message();
+      menu = true;
+      break;
+
+    case 4: // Logout
       show("Logging out...", "");
       delay(1000);
       login = false;
@@ -72,39 +77,32 @@ void loop() { // This code will always run
   }
 }
 
-void show(String first, String second){ //first is top row and second is bottom row
+void show(String firstRow, String secondRow){ //first is top row and second is bottom row
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print(first);
+  lcd.print(firstRow);
   lcd.setCursor(0, 1);
-  lcd.print(second);
+  lcd.print(secondRow);
   delay(100);
 }
 
-String decryptCaesar(String str, int shift) { // Works! :)
-  String shifted = "";
-  for (int i = 0; i < str.length(); i++) {
-    char c = str.charAt(i);
-    if (isAlpha(c)) {
-      char base = isUpperCase(c) ? 'A' : 'a';
-      c = ((c - base - shift) % 26 + 26) % 26 + base;
-    }
-    shifted += c;
+String decryptCaesar(String str, int shift) { // Declares the function so it can be called from the main area
+  String plaintext = ""; // Temporary string for the deciphered message
+  for (int i = 0; i < str.length(); i++) { // This goes through all letters of the ciphertext
+    char shiftedLetter = str.charAt(i); // Stores the letter that is being shifted
+    shiftedLetter = ((shiftedLetter - 'A' - shift) % 26 + 26) % 26 + 'A';  // Shifts the letter
+    plaintext += shiftedLetter; // Adds the shifted letter to plaintext
   }
-  return shifted;
+  return plaintext; // Outputs the plaintext in its full form
 }
 
 String atbashCipher(String input) {
-  String output = "";
-  for (int i = 0; i < input.length(); i++) {
-    char c = input[i];
-    if (c >= 'A' && c <= 'Z') {
-      output += (char)('Z' - (c - 'A'));
-    } else {
-      output += c;  // Non-alphabet characters remain unchanged
-    }
+  String plaintext = ""; // Temporary string for the deciphered message
+  for (int i = 0; i < input.length(); i++) { // This goes through all letters of the ciphertext
+    char shiftedLetter = input[i]; // Stores the letter that is being shifted
+    plaintext += (char)('Z' - (shiftedLetter - 'A')); // Applies the letter swap and adds the letter to the plaintext
   }
-  return output;
+  return plaintext; // Outputs the plaintext in its full form
 }
 
 void displayMenu(){
@@ -112,7 +110,7 @@ void displayMenu(){
     show("-= Main Menu =-", menuItem[arrVal]);
 
     if (digitalRead(buttonPin1) == LOW) { // Iterate through the menu items
-      if (arrVal == 3) {
+      if (arrVal == 4) {
         arrVal = 0;
       } else {
         arrVal += 1;
@@ -141,7 +139,6 @@ void inputMode(){
     int sensorValue = analogRead(A5);
     int val = (sensorValue / 40) + 1;
     temp = 'A' + (val - 1); // Changes int value into letter (A-Z)
-    delay(10);
 
     if (digitalRead(buttonPin1) == LOW ){ //Select
       delay(500);
@@ -176,6 +173,7 @@ void inputMode(){
         }
       }
     }
+    delay(10);
   } //while loop bracket
 }
 
@@ -189,7 +187,7 @@ void caesarMode(){
 
     show(ciphertext, "Key = " + String(shift));
 
-    if (digitalRead(buttonPin2) == LOW) { // Apply shift
+    if (digitalRead(buttonPin1) == LOW) { // Apply shift
       lcd.clear();
       lcd.setCursor(0, 0);
       String shiftedPasswd = decryptCaesar(ciphertext, shift);
@@ -199,7 +197,7 @@ void caesarMode(){
       expire(); // Custom animation function
     }
 
-    if (digitalRead(buttonPin1) == LOW) { // Exit
+    if (digitalRead(buttonPin2) == LOW) { // Exit
       show("Exiting...", "");
       delay(1000);
       temp = false;
@@ -215,13 +213,13 @@ void atbashMode(){
   while (temp) {
     show("Ciphertext:", ciphertext);
 
-    if (digitalRead(buttonPin2) == LOW) { // Apply decryption
+    if (digitalRead(buttonPin1) == LOW) { // Apply decryption
       lcd.clear();
       animateStr(atbashCipher(ciphertext), 0);
       expire();
     }
 
-    if (digitalRead(buttonPin1) == LOW) { // Exit
+    if (digitalRead(buttonPin2) == LOW) { // Exit
       show("Exiting...", "");
       delay(1000);
       temp = false;
@@ -259,6 +257,13 @@ void displayLogin(){
       }
     }
   }
+}
+
+void message(){
+  show("Some","secret");
+  delay(2900);
+  show("message","");
+  delay(2900);
 }
 
 void animateStr(String str, int r) { // r is the row of the LCD
