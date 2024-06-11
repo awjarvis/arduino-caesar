@@ -7,7 +7,7 @@ const int buttonPin2 = 7; // right button
 // Main menu vars
 int arrVal = 0;
 bool menu = true; // Val for the while loop
-bool login = true;
+bool login = false;
 String menuItem[5] = {"Input Ciphertext", "Decrypt Atbash", "Decrypt Caesar", "???", "Logout"}; // Menu item array
 String ciphertext = ""; // Global ciphertext var
 
@@ -199,14 +199,6 @@ void caesarMode(){
     int sensorValue = analogRead(A5);
     shift = (sensorValue / 40) + 1;
 
-    /*lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.write(byte(1)); 
-    lcd.print("  Key = " + String(shift) + "    "); 
-    lcd.write(byte(3));
-    lcd.setCursor(0, 1); 
-    lcd.print("   "+ciphertext +" ");
-    delay(70);*/
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.write(byte(1));
@@ -280,7 +272,13 @@ void displayLogin(){
 
   while(!login){
     int i = (analogRead(A5)/30) + 1;
-    show("Login Passkey:", (passkeyStr + String(i)));
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.write(byte(3));
+    lcd.print(" Enter Passkey:");
+    lcd.setCursor(0, 1); 
+    lcd.print("  "+passkeyStr + String(i)); 
+    delay(70);
 
     if (digitalRead(buttonPin1) == LOW) { // Select
       passkeyStr += (String(i) + " ");
