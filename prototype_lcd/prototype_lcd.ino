@@ -304,10 +304,10 @@ void displayLogin(){
 }
 
 void message(){
-  show("The atbash", "cipher is:");
+  show("The atbash", "ciphertext is:");
   delay(2900);
   show("VZTOV ","");
-  delay(7900);
+  expire();
 }
 
 void animateStr(String str, int r) { // r is the row of the LCD
