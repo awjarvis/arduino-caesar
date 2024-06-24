@@ -1,5 +1,5 @@
 #include <LiquidCrystal.h>
-
+  
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // Assigns pins to LCD
 const int buttonPin1 = 8; // left button
 const int buttonPin2 = 7; // right button
@@ -304,10 +304,10 @@ void displayLogin(){
 }
 
 void message(){
-  show("Some","secret");
+  show("The atbash", "cipher is:");
   delay(2900);
-  show("message","");
-  delay(2900);
+  show("VZTOV ","");
+  delay(7900);
 }
 
 void animateStr(String str, int r) { // r is the row of the LCD
